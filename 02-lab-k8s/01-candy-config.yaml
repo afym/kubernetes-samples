@@ -1,0 +1,29 @@
+---
+# Service account for candy pod (acces to k8s APIs)
+apiVersion: v1
+kind: ServiceAccount 
+metadata:
+  name: candy-svc
+  namespace: default
+
+---
+# Candy configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: candy-service-config
+data:
+  candy.cfg: |-
+    candy.peppermint.power=100000000
+    candy.nougat-armor.strength=10
+    candy.lemon.acceptability=0
+
+---
+# Secret database password
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-password
+  namespace: default
+stringData:
+  password: Kub3rn3t3sRul3s!

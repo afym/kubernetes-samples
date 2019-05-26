@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: candy
+  namespace: default
+  labels:
+    app: candy
+spec:
+  # adding acces to k8S api
+  serviceAccountName: candy-svc
+  # adding security context
+  securityContext:
+    runAsGroup: 2000
+  containers:
+  - name: candy-container
+    image: linuxacademycontent/candy-service:1
+    # internal mount volume for the container
+    volumeMounts:
+      - name: configuration
+        mountPath: /etc/candy-service
+    # using env variable and setting value from secret
+    env:
+      - name : DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: db-password
+            key: password
+    # resources for candy pod
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "64Mi"
+      limits:
+        cpu: "500m"
+        memory: "128Mi"
+  # volume from nfs, config map, hostpath, etc      
+  volumes:
+  - name: configuration
+    configMap:
+      name: candy-service-config
